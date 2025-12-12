@@ -7,34 +7,146 @@
 </head>
 
 <body class="bg-gray-100">
-    <div class="max-w-5xl mx-auto py-10">
-        <h1 class="text-3xl font-bold mb-6">👨‍⚕️ Doctor Dashboard</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="max-w-7xl mx-auto p-8 grid grid-cols-12 gap-8">
 
-            <a href="#" class="p-6 bg-white shadow rounded-xl hover:bg-blue-50">
-                <h2 class="text-lg font-bold">📅 View Appointments</h2>
-                <p class="text-gray-600">Check all patient bookings.</p>
-            </a>
+    <!-- ============ LEFT SIDEBAR ============ -->
+    <div class="col-span-12 lg:col-span-4 space-y-6">
 
-            <a href="#" class="p-6 bg-white shadow rounded-xl hover:bg-green-50">
-                <h2 class="text-lg font-bold">💰 Payment Status</h2>
-                <p class="text-gray-600">See paid & pending payments.</p>
-            </a>
+        <h1 class="text-3xl font-bold flex items-center gap-2 mb-4">
+            🧑‍⚕️ Doctor Dashboard
+        </h1>
 
-            <a href="#" class="p-6 bg-white shadow rounded-xl hover:bg-purple-50">
-                <h2 class="text-lg font-bold">🎥 Start Video Call</h2>
-                <p class="text-gray-600">Join meeting with the patient.</p>
-            </a>
+        <!-- Card 1 -->
+        <a href="{% url 'doctor_appointments' %}" 
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-blue-50 transition">
+            <h2 class="font-semibold text-lg flex items-center gap-2">
+                📅 View Appointments
+            </h2>
+            <p class="text-gray-600 text-sm mt-1">See all patient bookings.</p>
+        </a>
 
-            <a href="#" class="p-6 bg-white shadow rounded-xl hover:bg-orange-50">
-                <h2 class="text-lg font-bold">✍️ Write Prescription</h2>
-                <p class="text-gray-600">Create prescription for patient.</p>
-            </a>
+        <!-- Card 2 -->
+        <a href="#" 
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-yellow-50 transition">
+            <h2 class="font-semibold text-lg flex items-center gap-2">
+                💰 Payment Status
+            </h2>
+            <p class="text-gray-600 text-sm mt-1">See paid & pending payments.</p>
+        </a>
 
-        </div>
+        <!-- Card 3 -->
+        <a href="#" 
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-purple-50 transition">
+            <h2 class="font-semibold text-lg flex items-center gap-2">
+                🎥 Start Video Call
+            </h2>
+            <p class="text-gray-600 text-sm mt-1">Join meeting with the patient.</p>
+        </a>
+
+        <!-- Card 4 -->
+        <a href="#" 
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-orange-50 transition">
+            <h2 class="font-semibold text-lg flex items-center gap-2">
+                📝 Write Prescription
+            </h2>
+            <p class="text-gray-600 text-sm mt-1">Create prescription for patient.</p>
+        </a>
+
     </div>
+
+    <!-- ============ MAIN CONTENT AREA ============ -->
+    <div class="col-span-12 lg:col-span-8">
+
+        <!-- ---------- PENDING APPOINTMENTS ---------- -->
+        <div class="bg-white p-6 shadow-lg rounded-xl mb-8">
+            <h2 class="text-2xl font-bold mb-4">🟠 Pending Appointments</h2>
+
+            {% if pending_appointments %}
+                <table class="w-full border-collapse">
+                    <tr class="border-b bg-gray-100">
+                        <th class="p-3 text-left">Patient</th>
+                        <th class="p-3 text-left">Date</th>
+                        <th class="p-3 text-left">Status</th>
+                        <th class="p-3 text-left">Action</th>
+                    </tr>
+
+                    {% for a in pending_appointments %}
+                    <tr class="border-b">
+                        <td class="p-3">{{ a.patient.username }}</td>
+                        <td class="p-3">{{ a.date }}</td>
+                        <td class="p-3 text-orange-600 font-semibold">Pending</td>
+                        <td class="p-3">
+                            <a href="{% url 'approve_appointment' a.id %}" 
+                               class="px-3 py-1 bg-green-600 text-white rounded-lg">Approve</a>
+                            <a href="{% url 'reject_appointment' a.id %}" 
+                               class="px-3 py-1 bg-red-600 text-white rounded-lg">Reject</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="text-gray-600">No pending appointments.</p>
+            {% endif %}
+        </div>
+
+        <!-- ---------- APPROVED APPOINTMENTS ---------- -->
+        <div class="bg-white p-6 shadow-lg rounded-xl mb-8">
+            <h2 class="text-2xl font-bold mb-4">🟢 Approved Appointments</h2>
+
+            {% if approved_appointments %}
+                <table class="w-full border-collapse">
+                    <tr class="border-b bg-gray-100">
+                        <th class="p-3 text-left">Patient</th>
+                        <th class="p-3 text-left">Date</th>
+                        <th class="p-3 text-left">Payment</th>
+                    </tr>
+
+                    {% for a in approved_appointments %}
+                    <tr class="border-b">
+                        <td class="p-3">{{ a.patient.username }}</td>
+                        <td class="p-3">{{ a.date }}</td>
+
+                        {% if a.payment_status == "paid" %}
+                        <td class="p-3 text-green-600 font-semibold">Paid</td>
+                        {% else %}
+                        <td class="p-3 text-red-600 font-semibold">Not Paid</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="text-gray-600">No approved appointments.</p>
+            {% endif %}
+        </div>
+
+        <!-- ---------- REJECTED APPOINTMENTS ---------- -->
+        <div class="bg-white p-6 shadow-lg rounded-xl">
+            <h2 class="text-2xl font-bold mb-4">🔴 Rejected Appointments</h2>
+
+            {% if rejected_appointments %}
+                <table class="w-full border-collapse">
+                    <tr class="border-b bg-gray-100">
+                        <th class="p-3 text-left">Patient</th>
+                        <th class="p-3 text-left">Date</th>
+                    </tr>
+
+                    {% for a in rejected_appointments %}
+                    <tr class="border-b">
+                        <td class="p-3">{{ a.patient.username }}</td>
+                        <td class="p-3">{{ a.date }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="text-gray-600">No rejected appointments.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
-
 

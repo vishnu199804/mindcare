@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Appointment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-blue-50">
+
+    <div class="max-w-2xl mx-auto mt-12">
+
+        <!-- Page Header -->
+        <div class="mb-8 flex items-center gap-3">
+            <span class="text-3xl">📅</span>
+            <h1 class="text-3xl font-bold">Book Appointment</h1>
+        </div>
+
+        <!-- Appointment Card -->
+        <div class="bg-white shadow-lg rounded-2xl p-8">
+
+            <p class="text-gray-600 mb-6">
+                Select a preferred date & time to schedule your session with the doctor.
+            </p>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Loop through each field to style it -->
+                {% for field in form %}
+                    <div>
+                        <label class="block font-semibold mb-1">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="text-sm text-gray-500">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p class="text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <!-- Submit button -->
+                <button 
+                    type="submit" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-md transition">
+                    ✔ Book Appointment
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Extra styling for Django form fields -->
+    <style>
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            margin-top: 4px;
+            background: #f8fafc;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+        }
+    </style>
+
+</body>
+</html>
+

@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('core.urls')),               # Landing/Home page
     path('accounts/', include('accounts.urls')),  # your login/signup app
     path('dashboard/', include('dashboard.urls')),  # ADD THIS # Dashboard
-    path('appointments/', include('appointments.urls')),#appointment
+    path("appointment/", include("appointments.urls")),#appointments
+    
 ]
 

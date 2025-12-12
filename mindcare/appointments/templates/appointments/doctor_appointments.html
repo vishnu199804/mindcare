@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Appointments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-10">
+
+<h1 class="text-3xl font-bold mb-6">👨‍⚕️ Doctor Appointments</h1>
+
+<table class="w-full bg-white shadow rounded-xl overflow-hidden">
+    <thead class="bg-gray-200">
+        <tr>
+            <th class="p-3 text-left">Patient</th>
+            <th class="p-3 text-left">Date</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for appt in appointments %}
+        <tr class="border-b">
+            <td class="p-3">{{ appt.patient.username }}</td>
+            <td class="p-3">{{ appt.date }}</td>
+
+            <td class="p-3">
+                {% if appt.status == "pending" %}
+                    <span class="text-orange-500 font-semibold">Pending</span>
+                {% elif appt.status == "approved" %}
+                    <span class="text-green-600 font-semibold">Approved</span>
+                {% else %}
+                    <span class="text-red-600 font-semibold">Rejected</span>
+                {% endif %}
+            </td>
+
+            <td class="p-3 flex gap-2">
+                <a href="{% url 'approve_appointment' appt.id %}" 
+                   class="px-3 py-1 bg-green-600 text-white rounded">Approve</a>
+
+                <a href="{% url 'reject_appointment' appt.id %}" 
+                   class="px-3 py-1 bg-red-600 text-white rounded">Reject</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

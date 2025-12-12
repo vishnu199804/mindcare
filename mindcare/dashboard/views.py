@@ -10,25 +10,34 @@ from appointments.models import Appointment
 def doctor_dashboard(request):
     doctor = request.user
 
-    pending = Appointment.objects.filter(doctor=doctor, status="pending")
-    approved = Appointment.objects.filter(doctor=doctor, status="approved")
+    # Get appointments belonging to this doctor
+    pending = Appointment.objects.filter(doctor=doctor, status="pending").order_by("-date")
+    approved = Appointment.objects.filter(doctor=doctor, status="approved").order_by("-date")
+    rejected = Appointment.objects.filter(doctor=doctor, status="rejected").order_by("-date")
+
+    # Also get all for listing table
+    all_appointments = Appointment.objects.filter(doctor=doctor).order_by("-date")
 
     return render(request, "dashboard/doctor_dashboard.html", {
         "pending_appointments": pending,
         "approved_appointments": approved,
+        "rejected_appointments": rejected,
+
         "pending_count": pending.count(),
         "approved_count": approved.count(),
-    })
+        "rejected_count": rejected.count(),
 
+        "appointments": all_appointments,
+    })
 
 # --------------------------
 # PATIENT DASHBOARD VIEW
 # --------------------------
 @login_required
 def patient_dashboard(request):
-    user = request.user
+    patient = request.user
 
-    appointments = Appointment.objects.filter(patient=user).order_by('-date')
+    appointments = Appointment.objects.filter(patient=patient).order_by('-date')
 
     return render(request, "dashboard/patient_dashboard.html", {
         "appointments": appointments

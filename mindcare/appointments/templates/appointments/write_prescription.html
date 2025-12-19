@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Write Prescription</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-6">
+
+<div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+    <!-- Header -->
+    <div class="bg-emerald-600 text-white p-6">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
+            🧾 Write Prescription
+        </h1>
+        <p class="text-sm opacity-90 mt-1">
+            Patient consultation completed — enter medical details
+        </p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" class="p-8 space-y-6">
+        {% csrf_token %}
+
+        <!-- Patient Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="text-sm text-gray-600">Patient Age</label>
+                <input name="patient_age" type="number" required
+                       placeholder="Age in years"
+                       class="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="text-sm text-gray-600">Weight (kg)</label>
+                <input name="patient_weight" type="number" step="0.1" required
+                       placeholder="Weight in kg"
+                       class="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 focus:outline-none">
+            </div>
+        </div>
+
+        <!-- Diagnosis -->
+        <div>
+            <label class="text-sm text-gray-600">Diagnosis</label>
+            <textarea name="diagnosis" rows="3" required
+                      placeholder="Enter diagnosis details"
+                      class="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 focus:outline-none"></textarea>
+        </div>
+
+        <!-- Medicines -->
+        <div>
+            <label class="text-sm text-gray-600">Medicines</label>
+            <textarea name="medicines" rows="4" required
+                      placeholder="Medicine name – dosage – timing"
+                      class="mt-1 w-full border border-gray-300 rounded-lg p-3 font-mono focus:ring-2 focus:ring-emerald-400 focus:outline-none"></textarea>
+        </div>
+
+        <!-- Advice -->
+        <div>
+            <label class="text-sm text-gray-600">Doctor Advice</label>
+            <textarea name="advice" rows="3"
+                      placeholder="Diet, rest, follow-up instructions"
+                      class="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-emerald-400 focus:outline-none"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t">
+
+            <a href="{% url 'doctor_dashboard' %}"
+               class="text-gray-600 hover:text-gray-900 font-medium">
+                ← Back to Dashboard
+            </a>
+
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl shadow-lg transition">
+                💾 Save Prescription
+            </button>
+
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>
+
+

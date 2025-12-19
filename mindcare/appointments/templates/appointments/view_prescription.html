@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Prescription</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100 flex items-center justify-center p-6">
+
+<div class="w-full max-w-4xl bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden">
+
+    <!-- Header -->
+    <div class="relative bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-6 text-white">
+        <h1 class="text-3xl font-bold tracking-wide flex items-center gap-2">
+            🧾 Digital Prescription
+        </h1>
+        <p class="text-sm opacity-90 mt-1">
+            Issued by Dr. {{ appointment.doctor.username }}
+        </p>
+
+        <!-- Decorative blur -->
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Body -->
+    <div class="p-8 space-y-8">
+
+        <!-- Patient Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-gray-50 border border-gray-200 rounded-2xl p-6">
+            <div>
+                <p class="text-xs uppercase tracking-wider text-gray-500">Age</p>
+                <p class="text-xl font-semibold text-gray-800">
+                    {{ appointment.patient_age }} yrs
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs uppercase tracking-wider text-gray-500">Weight</p>
+                <p class="text-xl font-semibold text-gray-800">
+                    {{ appointment.patient_weight }} kg
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs uppercase tracking-wider text-gray-500">Doctor</p>
+                <p class="text-xl font-semibold text-gray-800">
+                    Dr. {{ appointment.doctor.username }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Diagnosis -->
+        <section>
+            <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                🩺 Diagnosis
+            </h2>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 leading-relaxed text-gray-700">
+                {{ appointment.diagnosis }}
+            </div>
+        </section>
+
+        <!-- Medicines -->
+        <section>
+            <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                💊 Medicines
+            </h2>
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 font-sans whitespace-pre-wrap text-gray-700">
+                {{ appointment.medicines }}
+            </div>
+        </section>
+
+        <!-- Advice -->
+        <section>
+            <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                📌 Doctor’s Advice
+            </h2>
+            <div class="bg-white border border-gray-200 rounded-xl p-5 leading-relaxed text-gray-700">
+                {{ appointment.advice }}
+            </div>
+        </section>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-gray-200">
+
+            <a href="{% url 'doctor_prescriptions' %}"
+               class="text-gray-600 hover:text-gray-900 font-medium flex items-center gap-1">
+                ← Back to Prescriptions
+            </a>
+
+            <div class="flex gap-3">
+                <a href="{% url 'edit_prescription' appointment.id %}"
+                   class="px-5 py-2.5 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-semibold shadow transition">
+                    ✏️ Edit
+                </a>
+
+                <a href="{% url 'download_redirect' appointment.id %}"
+                   class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow transition">
+                    ⬇️ Download PDF
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

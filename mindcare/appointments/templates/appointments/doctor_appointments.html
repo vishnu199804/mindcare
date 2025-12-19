@@ -1,51 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Doctor Appointments</title>
+    <meta charset="UTF-8">
+    <title>Doctor Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 p-10">
+<body class="bg-gray-100 min-h-screen p-8">
 
-<h1 class="text-3xl font-bold mb-6">👨‍⚕️ Doctor Appointments</h1>
+<!-- ================= HEADER ================= -->
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">👨‍⚕️ Doctor Dashboard</h1>
 
-<table class="w-full bg-white shadow rounded-xl overflow-hidden">
-    <thead class="bg-gray-200">
-        <tr>
-            <th class="p-3 text-left">Patient</th>
-            <th class="p-3 text-left">Date</th>
-            <th class="p-3 text-left">Status</th>
-            <th class="p-3">Action</th>
-        </tr>
-    </thead>
+    <a href="{% url 'doctor_dashboard' %}"
+       class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700">
+        ← Back to Dashboard
+    </a>
+</div>
 
-    <tbody>
-        {% for appt in appointments %}
-        <tr class="border-b">
-            <td class="p-3">{{ appt.patient.username }}</td>
-            <td class="p-3">{{ appt.date }}</td>
+<!-- ================= SUMMARY CARDS ================= -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
 
-            <td class="p-3">
-                {% if appt.status == "pending" %}
-                    <span class="text-orange-500 font-semibold">Pending</span>
-                {% elif appt.status == "approved" %}
-                    <span class="text-green-600 font-semibold">Approved</span>
-                {% else %}
-                    <span class="text-red-600 font-semibold">Rejected</span>
-                {% endif %}
-            </td>
+    <!-- TOTAL -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500">Total Appointments</p>
+        <h2 class="text-3xl font-bold">{{ appointments.count }}</h2>
+    </div>
 
-            <td class="p-3 flex gap-2">
-                <a href="{% url 'approve_appointment' appt.id %}" 
-                   class="px-3 py-1 bg-green-600 text-white rounded">Approve</a>
+    <!-- PAID COUNT -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500">Paid Appointments</p>
+        <h2 class="text-3xl font-bold text-green-600">
+            {{ paid_count }}
+        </h2>
+    </div>
 
-                <a href="{% url 'reject_appointment' appt.id %}" 
-                   class="px-3 py-1 bg-red-600 text-white rounded">Reject</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    <!-- EARNINGS -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500">Total Earnings</p>
+        <h2 class="text-3xl font-bold text-indigo-600">
+            ₹ {{ total_earnings }}
+        </h2>
+        <p class="text-xs text-gray-400 mt-1">₹500 per consultation</p>
+    </div>
+
+</div>
+
+<!-- ================= TABLE ================= -->
+<div class="bg-white shadow rounded-xl overflow-hidden">
+
+<table class="w-full">
+<thead class="bg-gray-100">
+<tr>
+    <th class="p-4 text-left">Patient</th>
+    <th class="p-4 text-left">Date</th>
+    <th class="p-4 text-left">Status</th>
+    <th class="p-4 text-left">Payment</th>
+    <th class="p-4 text-center">Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for appt in appointments %}
+<tr class="border-t hover:bg-gray-50">
+
+    <td class="p-4 font-medium">{{ appt.patient.username }}</td>
+
+    <td class="p-4">{{ appt.date|date:"d M Y, h:i A" }}</td>
+
+    <!-- STATUS -->
+    <td class="p-4">
+        {% if appt.status == "pending" %}
+            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full">Pending</span>
+        {% elif appt.status == "approved" %}
+            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full">Approved</span>
+        {% elif appt.status == "completed" %}
+            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full">Completed</span>
+        {% else %}
+            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full">Rejected</span>
+        {% endif %}
+    </td>
+
+    <!-- PAYMENT -->
+    <td class="p-4">
+        {% if appt.payment_status == "paid" %}
+            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full">
+                💰 Paid
+            </span>
+        {% else %}
+            <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full">
+                Unpaid
+            </span>
+        {% endif %}
+    </td>
+
+    <!-- ACTIONS -->
+    <td class="p-4 flex flex-wrap justify-center gap-2">
+
+        {% if appt.status == "pending" %}
+            <a href="{% url 'approve_appointment' appt.id %}"
+               class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                Approve
+            </a>
+
+            <a href="{% url 'reject_appointment' appt.id %}"
+               class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                Reject
+            </a>
+        {% endif %}
+
+        {% if appt.payment_status == "paid" %}
+            <a href="{% url 'join_call' appt.id %}"
+               target="_blank"
+               class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                📹 Video Call
+            </a>
+        {% endif %}
+
+        {% if appt.payment_status == "paid" and appt.status != "completed" %}
+            <a href="{% url 'write_prescription' appt.id %}"
+               class="px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-900">
+                📝 Prescription
+            </a>
+        {% endif %}
+
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" class="p-6 text-center text-gray-500">
+        No appointments found
+    </td>
+</tr>
+{% endfor %}
+</tbody>
 </table>
+</div>
 
 </body>
 </html>

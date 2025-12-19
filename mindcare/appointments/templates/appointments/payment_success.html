@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Payment Successful</title>
+    <meta charset="UTF-8">
+    <title>Payment Successful | MindCare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<h1>Payment Successful 🎉</h1>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
 
-<p>Your payment for appointment <strong>#{{ appointment.id }}</strong> is confirmed.</p>
+    <div class="bg-white shadow-2xl rounded-2xl p-10 max-w-md w-full text-center">
 
-<a href="/dashboard/">Go to Dashboard</a>
+        <!-- Success Icon -->
+        <div class="mx-auto mb-6 flex items-center justify-center w-20 h-20 rounded-full bg-green-100">
+            <span class="text-4xl">✅</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-3xl font-extrabold text-green-600 mb-2">
+            Payment Successful!
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-gray-600 mb-6">
+            Your payment has been processed successfully.
+        </p>
+
+        <!-- Appointment Info -->
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+            <p class="text-gray-700">
+                Appointment ID:
+                <span class="font-semibold text-gray-900">
+                    #{{ appointment.id }}
+                </span>
+            </p>
+        </div>
+
+        <!-- Action Button -->
+        <a href="{% url 'dashboard' %}"
+           class="inline-block w-full py-3 rounded-xl text-white font-semibold text-lg
+                  bg-gradient-to-r from-green-500 to-blue-600
+                  hover:from-green-600 hover:to-blue-700
+                  transition transform hover:-translate-y-0.5 shadow-lg">
+            Go to Dashboard
+        </a>
+
+        <!-- Footer Note -->
+        <p class="text-xs text-gray-400 mt-6">
+            Thank you for choosing <strong>MindCare</strong> 💙
+        </p>
+
+    </div>
 
 </body>
 </html>
+

@@ -1,11 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>Secure Payment | MindCare</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
-<body>
 
-<h2>Processing Payment...</h2>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 min-h-screen flex items-center justify-center">
+
+    <!-- PAYMENT CARD -->
+    <div class="bg-white rounded-2xl shadow-xl p-10 w-full max-w-md text-center">
+
+        <!-- Logo / Title -->
+        <h1 class="text-3xl font-bold text-indigo-700 mb-2">
+            💳 Secure Payment
+        </h1>
+        <p class="text-gray-500 mb-6">
+            Complete your consultation fee safely
+        </p>
+
+        <!-- Appointment Info -->
+        <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
+            <p class="text-sm text-gray-500">Appointment ID</p>
+            <p class="font-semibold text-gray-800">#{{ appointment.id }}</p>
+
+            <p class="text-sm text-gray-500 mt-2">Doctor</p>
+            <p class="font-semibold text-gray-800">
+                {{ appointment.doctor.username }}
+            </p>
+
+            <p class="text-sm text-gray-500 mt-2">Amount</p>
+            <p class="font-bold text-xl text-green-600">
+                ₹ {{ payment.amount|floatformat:0 }}
+            </p>
+        </div>
+
+        <!-- Loading Message -->
+        <div class="flex items-center justify-center gap-2 text-indigo-600 font-medium">
+            <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            </svg>
+            Redirecting to Razorpay…
+        </div>
+
+        <p class="text-xs text-gray-400 mt-4">
+            Please do not refresh or close this page
+        </p>
+    </div>
 
 <script>
 var options = {
@@ -13,25 +56,47 @@ var options = {
     "amount": "{{ payment.amount }}",
     "currency": "INR",
     "name": "MindCare",
+    "description": "Doctor Consultation Fee",
     "order_id": "{{ payment.id }}",
-    "handler": function (response){
-        fetch("/appointment/razorpay/callback/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-                "razorpay_payment_id": response.razorpay_payment_id,
-                "razorpay_order_id": response.razorpay_order_id,
-                "razorpay_signature": response.razorpay_signature
-            })
-        }).then(() => {
-            window.location.href = "/appointment/payment/success/{{ appointment.id }}/";
-        });
+
+    "handler": function (response) {
+
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = "{% url 'razorpay_success' %}";
+
+        var csrf = document.createElement("input");
+        csrf.type = "hidden";
+        csrf.name = "csrfmiddlewaretoken";
+        csrf.value = "{{ csrf_token }}";
+
+        var order = document.createElement("input");
+        order.type = "hidden";
+        order.name = "razorpay_order_id";
+        order.value = response.razorpay_order_id;
+
+        var payment = document.createElement("input");
+        payment.type = "hidden";
+        payment.name = "razorpay_payment_id";
+        payment.value = response.razorpay_payment_id;
+
+        var signature = document.createElement("input");
+        signature.type = "hidden";
+        signature.name = "razorpay_signature";
+        signature.value = response.razorpay_signature;
+
+        form.appendChild(csrf);
+        form.appendChild(order);
+        form.appendChild(payment);
+        form.appendChild(signature);
+
+        document.body.appendChild(form);
+        form.submit();
     }
 };
-var rzp1 = new Razorpay(options);
-rzp1.open();
+
+var rzp = new Razorpay(options);
+rzp.open();
 </script>
 
 </body>

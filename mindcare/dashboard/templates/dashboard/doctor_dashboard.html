@@ -6,146 +6,100 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
 
-<div class="max-w-7xl mx-auto p-8 grid grid-cols-12 gap-8">
+<!-- ================= HEADER ================= -->
+<header class="bg-white shadow px-8 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold flex items-center gap-2">
+        🧑‍⚕️ Doctor Dashboard
+    </h1>
 
-    <!-- ============ LEFT SIDEBAR ============ -->
-    <div class="col-span-12 lg:col-span-4 space-y-6">
+    <a href="{% url 'logout' %}"
+       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+        Logout
+    </a>
+</header>
 
-        <h1 class="text-3xl font-bold flex items-center gap-2 mb-4">
-            🧑‍⚕️ Doctor Dashboard
-        </h1>
+<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto p-8 grid grid-cols-12 gap-8">
 
-        <!-- Card 1 -->
-        <a href="{% url 'doctor_appointments' %}" 
-           class="block bg-white shadow-md rounded-xl p-6 hover:bg-blue-50 transition">
-            <h2 class="font-semibold text-lg flex items-center gap-2">
-                📅 View Appointments
-            </h2>
-            <p class="text-gray-600 text-sm mt-1">See all patient bookings.</p>
+    <!-- LEFT SIDEBAR -->
+    <aside class="col-span-12 lg:col-span-4 space-y-6">
+
+        <!-- Appointments -->
+        <a href="{% url 'doctor_appointments' %}"
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-blue-50 hover:shadow-lg transition">
+            <h2 class="font-semibold text-lg">📅 View Appointments</h2>
+            <p class="text-gray-600 text-sm mt-1">
+                See all patient bookings
+            </p>
         </a>
 
-        <!-- Card 2 -->
-        <a href="#" 
-           class="block bg-white shadow-md rounded-xl p-6 hover:bg-yellow-50 transition">
-            <h2 class="font-semibold text-lg flex items-center gap-2">
-                💰 Payment Status
-            </h2>
-            <p class="text-gray-600 text-sm mt-1">See paid & pending payments.</p>
+        <!-- Earnings -->
+        <a href="{% url 'doctor_earnings' %}"
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-green-50 hover:shadow-lg transition">
+            <h2 class="font-semibold text-lg">💰 Earnings</h2>
+
+            <p class="text-green-600 font-bold text-2xl mt-2">
+                ₹ {{ total_earnings }}
+            </p>
+
+            <p class="text-gray-500 text-sm mt-1">
+                View all paid earnings
+            </p>
         </a>
 
-        <!-- Card 3 -->
-        <a href="#" 
-           class="block bg-white shadow-md rounded-xl p-6 hover:bg-purple-50 transition">
-            <h2 class="font-semibold text-lg flex items-center gap-2">
-                🎥 Start Video Call
-            </h2>
-            <p class="text-gray-600 text-sm mt-1">Join meeting with the patient.</p>
+        <!-- Prescriptions -->
+        <a href="{% url 'doctor_prescriptions' %}"
+           class="block bg-white shadow-md rounded-xl p-6 hover:bg-indigo-50 hover:shadow-lg transition">
+            <h2 class="font-semibold text-lg">📄 Prescriptions</h2>
+            <p class="text-gray-600 text-sm mt-1">
+                Write & manage prescriptions
+            </p>
         </a>
 
-        <!-- Card 4 -->
-        <a href="#" 
-           class="block bg-white shadow-md rounded-xl p-6 hover:bg-orange-50 transition">
-            <h2 class="font-semibold text-lg flex items-center gap-2">
-                📝 Write Prescription
-            </h2>
-            <p class="text-gray-600 text-sm mt-1">Create prescription for patient.</p>
-        </a>
+    </aside>
 
-    </div>
+    <!-- RIGHT CONTENT -->
+    <section class="col-span-12 lg:col-span-8">
 
-    <!-- ============ MAIN CONTENT AREA ============ -->
-    <div class="col-span-12 lg:col-span-8">
-
-        <!-- ---------- PENDING APPOINTMENTS ---------- -->
-        <div class="bg-white p-6 shadow-lg rounded-xl mb-8">
-            <h2 class="text-2xl font-bold mb-4">🟠 Pending Appointments</h2>
-
-            {% if pending_appointments %}
-                <table class="w-full border-collapse">
-                    <tr class="border-b bg-gray-100">
-                        <th class="p-3 text-left">Patient</th>
-                        <th class="p-3 text-left">Date</th>
-                        <th class="p-3 text-left">Status</th>
-                        <th class="p-3 text-left">Action</th>
-                    </tr>
-
-                    {% for a in pending_appointments %}
-                    <tr class="border-b">
-                        <td class="p-3">{{ a.patient.username }}</td>
-                        <td class="p-3">{{ a.date }}</td>
-                        <td class="p-3 text-orange-600 font-semibold">Pending</td>
-                        <td class="p-3">
-                            <a href="{% url 'approve_appointment' a.id %}" 
-                               class="px-3 py-1 bg-green-600 text-white rounded-lg">Approve</a>
-                            <a href="{% url 'reject_appointment' a.id %}" 
-                               class="px-3 py-1 bg-red-600 text-white rounded-lg">Reject</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p class="text-gray-600">No pending appointments.</p>
-            {% endif %}
-        </div>
-
-        <!-- ---------- APPROVED APPOINTMENTS ---------- -->
-        <div class="bg-white p-6 shadow-lg rounded-xl mb-8">
-            <h2 class="text-2xl font-bold mb-4">🟢 Approved Appointments</h2>
-
-            {% if approved_appointments %}
-                <table class="w-full border-collapse">
-                    <tr class="border-b bg-gray-100">
-                        <th class="p-3 text-left">Patient</th>
-                        <th class="p-3 text-left">Date</th>
-                        <th class="p-3 text-left">Payment</th>
-                    </tr>
-
-                    {% for a in approved_appointments %}
-                    <tr class="border-b">
-                        <td class="p-3">{{ a.patient.username }}</td>
-                        <td class="p-3">{{ a.date }}</td>
-
-                        {% if a.payment_status == "paid" %}
-                        <td class="p-3 text-green-600 font-semibold">Paid</td>
-                        {% else %}
-                        <td class="p-3 text-red-600 font-semibold">Not Paid</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p class="text-gray-600">No approved appointments.</p>
-            {% endif %}
-        </div>
-
-        <!-- ---------- REJECTED APPOINTMENTS ---------- -->
+        <!-- Pending Appointments -->
         <div class="bg-white p-6 shadow-lg rounded-xl">
-            <h2 class="text-2xl font-bold mb-4">🔴 Rejected Appointments</h2>
+            <h2 class="text-xl font-bold mb-4">
+                🟠 Pending Appointments
+            </h2>
 
-            {% if rejected_appointments %}
-                <table class="w-full border-collapse">
-                    <tr class="border-b bg-gray-100">
-                        <th class="p-3 text-left">Patient</th>
-                        <th class="p-3 text-left">Date</th>
-                    </tr>
+            {% for a in pending_appointments %}
+                <div class="flex justify-between items-center border-b py-3 last:border-b-0">
+                    <div>
+                        <p class="font-semibold">{{ a.patient.username }}</p>
+                        <p class="text-sm text-gray-500">
+                            {{ a.date }}
+                        </p>
+                    </div>
 
-                    {% for a in rejected_appointments %}
-                    <tr class="border-b">
-                        <td class="p-3">{{ a.patient.username }}</td>
-                        <td class="p-3">{{ a.date }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            {% else %}
-                <p class="text-gray-600">No rejected appointments.</p>
-            {% endif %}
+                    <div class="space-x-2">
+                        <a href="{% url 'approve_appointment' a.id %}"
+                           class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded transition">
+                            Approve
+                        </a>
+
+                        <a href="{% url 'reject_appointment' a.id %}"
+                           class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition">
+                            Reject
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-gray-500">
+                    No pending appointments
+                </p>
+            {% endfor %}
         </div>
 
-    </div>
+    </section>
 
-</div>
+</main>
 
 </body>
 </html>

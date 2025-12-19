@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+
+<!-- HEADER -->
+<div class="bg-white shadow px-8 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">🧑‍⚕️ Patient Dashboard</h1>
+    <a href="{% url 'logout' %}" class="bg-red-600 text-white px-4 py-2 rounded">
+        Logout
+    </a>
+</div>
+
+<div class="max-w-7xl mx-auto py-10 grid grid-cols-4 gap-6">
+
+    <!-- ================= SIDEBAR ================= -->
+    <div class="space-y-4">
+
+        <!-- Book Appointment -->
+        <a href="{% url 'book_appointment' %}"
+           class="block p-5 bg-white rounded-xl shadow hover:bg-blue-50">
+            <h2 class="font-bold">📅 Book Appointment</h2>
+            <p class="text-sm text-gray-600">Schedule consultation</p>
+        </a>
+
+        <!-- Total Spent -->
+        <div class="p-5 bg-white rounded-xl shadow">
+            <p class="text-gray-500 text-sm">💰 Total Spent</p>
+            <h2 class="text-2xl font-bold text-green-600">₹ {{ total_spent }}</h2>
+        </div>
+
+        <!-- Balance -->
+        <div class="p-5 bg-white rounded-xl shadow">
+            <p class="text-gray-500 text-sm">💳 Balance</p>
+            <h2 class="text-2xl font-bold text-indigo-600">₹ {{ balance }}</h2>
+        </div>
+
+        <!-- JOIN CALL -->
+        {% if next_appt and next_appt.payment_status == "paid" and not next_appt.prescription_created %}
+        <a href="{% url 'join_call' next_appt.id %}"
+           class="block p-5 bg-white rounded-xl shadow hover:bg-purple-50">
+            <h2 class="font-bold">🎥 Join Video Call</h2>
+            <p class="text-sm text-gray-600">Attend consultation</p>
+        </a>
+        {% endif %}
+
+        <!-- PRESCRIPTION -->
+        {% if next_appt and next_appt.prescription_created %}
+        <a href="{% url 'view_prescription' next_appt.id %}"
+           class="block p-5 bg-white rounded-xl shadow hover:bg-green-50">
+            <h2 class="font-bold">📄 Prescription</h2>
+            <p class="text-sm text-gray-600">View / Download</p>
+        </a>
+        {% endif %}
+
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="col-span-3 space-y-6">
+
+        <!-- NEXT APPOINTMENT -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-2">🗓️ Next Appointment</h2>
+
+            {% if next_appt %}
+                <p><strong>Date:</strong> {{ next_appt.date|date:"d M Y, h:i A" }}</p>
+
+                <p><strong>Status:</strong>
+                    {% if next_appt.prescription_created %}
+                        <span class="text-blue-600 font-semibold">Completed</span>
+                    {% else %}
+                        <span class="text-green-600 font-semibold">
+                            {{ next_appt.status|title }}
+                        </span>
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="text-gray-500">No upcoming appointment</p>
+            {% endif %}
+        </div>
+
+        <!-- APPOINTMENTS TABLE -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-xl font-bold mb-4">📘 My Appointments</h2>
+
+            <table class="w-full border">
+                <tr class="bg-gray-100">
+                    <th class="p-2 text-left">Doctor</th>
+                    <th class="p-2">Date</th>
+                    <th class="p-2">Status</th>
+                    <th class="p-2">Actions</th>
+                </tr>
+
+                {% for appt in appointments %}
+                <tr class="border-t text-center">
+                    <td class="p-2 text-left">{{ appt.doctor.username }}</td>
+                    <td class="p-2">{{ appt.date|date:"d M Y, h:i A" }}</td>
+
+                    <td class="p-2">
+                        {% if appt.prescription_created %}
+                            <span class="text-blue-600 font-semibold">Completed</span>
+                        {% else %}
+                            {{ appt.status|title }}
+                        {% endif %}
+                    </td>
+
+                    <td class="p-2 space-x-2">
+                        {% if appt.status == "approved" and appt.payment_status == "unpaid" %}
+                            <a href="{% url 'pay_appointment' appt.id %}"
+                               class="bg-green-600 text-white px-3 py-1 rounded">
+                                Pay Now
+                            </a>
+
+                        {% elif appt.payment_status == "paid" %}
+                            {% if appt.prescription_created %}
+                                <a href="{% url 'view_prescription' appt.id %}"
+                                   class="bg-gray-800 text-white px-3 py-1 rounded">
+                                    Prescription
+                                </a>
+                            {% else %}
+                                <a href="{% url 'join_call' appt.id %}"
+                                   class="bg-indigo-600 text-white px-3 py-1 rounded">
+                                    Join Call
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-4 text-center text-gray-500">
+                        No appointments
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

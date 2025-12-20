@@ -24,11 +24,11 @@ RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
 # APPLICATIONS (Correct Order for Custom User Model)
 # ---------------------------------------------------------
 INSTALLED_APPS = [
-    'accounts',            # MUST COME BEFORE django.contrib.auth
-    'core',
-    'dashboard',
-    'appointments',
-    
+
+    'accounts.apps.AccountsConfig',
+    'core.apps.CoreConfig',
+    'dashboard.apps.DashboardConfig',
+    'appointments.apps.AppointmentsConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,4 +1,4 @@
-🧠 MindCare – Online Doctor Consultation Platform
+MindCare – Online Doctor Consultation Platform
 
 MindCare is a full-stack Django web application that enables patients to book appointments with doctors, receive approvals, make secure online payments, and get digital prescriptions.
 The project is fully deployed on Render and built with production-ready best practices.
